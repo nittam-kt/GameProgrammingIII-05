@@ -1,10 +1,15 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using R3;               // R3 core
+using R3.Triggers;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] float speed;
     [SerializeField] float jumpSpeed;
+
+    public float MaxLife => 100f;
+    public ReactiveProperty<float> life { get; private set; } = new();
 
     PlayerInput playerInput;
     Rigidbody2D rb;
@@ -14,6 +19,7 @@ public class Player : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody2D>();
+        life.Value = MaxLife;
     }
 
     // Update is called once per frame
