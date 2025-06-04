@@ -27,11 +27,33 @@ public class Player : MonoBehaviour
     {
         var move = playerInput.actions["Move"].ReadValue<Vector2>();
 
-        rb.linearVelocityX = move.x * speed;
+        if (move.x != 0f)
+        {
+            rb.linearVelocityX = move.x * speed;
+        }
 
         if (playerInput.actions["Jump"].WasPressedThisFrame())
         {
             rb.linearVelocityY = jumpSpeed;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        const float damage = 5f;
+        const float damageSpeed = 8f;
+
+        foreach(var col in collision.contacts)
+        {
+            if(col.rigidbody?.tag == "Enemy")
+            {
+                // ダメージを受ける
+                life.Value -= damage;
+
+                // 相手の反対方向にrbの速度を設定
+                var dir = (rb.position - col.rigidbody.position).normalized;
+                rb.linearVelocity = dir * damageSpeed;
+            }
         }
     }
 }
